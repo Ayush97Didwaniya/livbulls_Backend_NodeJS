@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
+    console.log('req', req.body);
    const quotes = await Quote.find();
    res.send(quotes);
 })
