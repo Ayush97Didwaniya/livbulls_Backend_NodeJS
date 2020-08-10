@@ -14,6 +14,10 @@ const Quote = mongoose.model('Quote', new mongoose.Schema({
         required: true,
         minlength: 5,
         maxlength: 400
+    },
+    quoteId: {
+        type: String,
+        required: true
     }
  }));
 
@@ -22,6 +26,7 @@ function validateQuote(quote) {
     const schema = {
         writter: Joi.string().min(2).max(50).required(),
         quotation: Joi.string().min(5).max(400).required(),
+        quoteId: Joi.string()
     };
     
     return Joi.validate(quote, schema);

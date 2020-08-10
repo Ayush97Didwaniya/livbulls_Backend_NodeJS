@@ -9,13 +9,20 @@ router.get('/', async (req, res) => {
 })
  
 router.post('/', async (req, res) => { 
+    console.log(req.body);
     const { error } = validate(req.body);
     if (error) return res.status(404).send(error.details[0].message);
+/* 
+    const result = await Quote.findByQuoteId('1');
+    console.log(result);
+    if(result) return res.status(500).send('quote already exist in DB'); */
 
     let quote = new Quote({
         writter: req.body.writter,
-        quotation: req.body.quotation
+        quotation: req.body.quotation,
+        quoteId: req.body.quoteId
     });
+    console.log('quote oBj', quote);
     quote = await quote.save();
     res.send('New quote SuccessFully Saved');
 }) 
