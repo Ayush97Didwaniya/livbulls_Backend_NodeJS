@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    console.log('req', req.body);
+   uconsole.log('req', req.body);
    const quotes = await Quote.find();
    res.send(quotes);
 })
@@ -12,32 +12,31 @@ router.post('/', async (req, res) => {
     console.log(req.body);
     const { error } = validate(req.body);
     if (error) return res.status(404).send(error.details[0].message);
-/* 
-    const result = await Quote.findByQuoteId('1');
-    console.log(result);
-    if(result) return res.status(500).send('quote already exist in DB'); */
 
-    let quote = new Quote({
+    let quote = await Quote.findOne();
+    if (quote) {
+        return res.status(500).send({message:'Quote Already Exist'});
+    }
+
+    quote = new Quote({
         writter: req.body.writter,
         quotation: req.body.quotation,
         quoteId: req.body.quoteId
     });
     console.log('quote oBj', quote);
     quote = await quote.save();
-    res.send('New quote SuccessFully Saved');
+    res.send(quote);
 }) 
 
-router.put('/:id', async (req, res) => {
+router.put('/', async (req, res) => {
     const {error} = validate(req.body);
     if( error ) return res.status(404).send(errors.details[0].message);
-    
-    let quote = await Quote.findByIdAndUpdate(req.params.id,
-    {   
-        writter: req.body.writter,
-        quotation: req.body.quotation
-    }, 
-    {   new : true });
-    
+
+    var query = { quoteId: '1' };
+    let quote = await Quote.findOneAndUpdate(query, { writter: req.body.writter, quotation: req.body.quotation }, 
+        { new : true });
+    console.log(quote);
+
     if( !quote ) return res.status(404).send('The quote with the given Id doesnt exist');
  
     res.send(quote);
