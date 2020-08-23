@@ -12,6 +12,9 @@ app.use(cors());
 
 app.use('/api/quotes', require('./routes/quote/quote.controller'));
 
+// term plan Routes 
+app.use('/api/termPlan', require('./routes/termPlans/termPlan.controller'));
+
 // use JWT auth to secure the api
 app.use(jwt());
 

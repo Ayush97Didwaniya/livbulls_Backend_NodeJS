@@ -38,6 +38,10 @@ async function create(userParam) {
         throw 'Username "' + userParam.username + '" is already taken';
     }
 
+    if (await User.findOne({ email: userParam.email })) {
+        throw 'Username "' + userParam.email + '" is already taken';
+    }
+
     const user = new User(userParam);
     // hash password
     if (userParam.password) {
