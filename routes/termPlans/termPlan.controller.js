@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => { 
     console.log(req.body);
     const { error } = validate(req.body);
-    if (error) return res.status(404).send(error.details[0].message);
+    if (error) return res.status(404).json({ message: error.details[0].message });
    
     if ( await TermPlan.findOne({ planName: req.body.planName }) ) {
         return res.status(400).json({ message: 'TermPlan already exist' });
@@ -32,7 +32,7 @@ router.put('/', async (req, res) => {
         { new : true });
     console.log(termPlan);
 
-    if( !termPlan ) return res.status(404).send('The term plan with the given Id doesnt exist');
+    if( !termPlan ) return res.status(404).json({message: 'The term plan with the given Id doesnt exist'});
  
     res.send(termPlan);
 })
@@ -42,7 +42,7 @@ router.delete('/:id', async (req, res) => {
 //
     let termPlan = await TermPlan.findByIdAndRemove(req.params.id);
     console.log(termPlan);
-    if( !termPlan ) return res.status(404).send('The TermPlan with the given Id doesnt exist');
+    if( !termPlan ) return res.status(404).json({ message: 'The TermPlan with the given Id doesnt exist' });
     res.send(termPlan);
 })
 
