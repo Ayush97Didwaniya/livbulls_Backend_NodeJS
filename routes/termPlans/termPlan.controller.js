@@ -5,7 +5,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
     destination: (req, res, callback) => {
-        callback(null, 'C:\Users\ayush\OneDrive\Pictures\Screenshots')
+        callback(null, 'upload')
     },
     filename: (req, file, callback) => {
         callback(null, `livbulls_${file.originalname}`)
@@ -41,16 +41,6 @@ router.post('/', upload.single('file'), async (req, res) => {
     termPlan = await termPlan.save();
     res.send(termPlan);
 }) 
-
-router.post('/file', upload.single('file'), (req, res, next) => {
-    const file = req.file;
-    if(!file) {
-        const error = new Error('Please upload a file')
-        error.httpStatusCode = 400
-        return next(error)
-    }
-    res.send(file)
-})  
 
 router.put('/', async (req, res) => {
     var query = { _id: req.body.id };
