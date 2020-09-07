@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 const jwt = require('_helpers/jwt');
 const errorHandler = require('_helpers/error-handler');
 

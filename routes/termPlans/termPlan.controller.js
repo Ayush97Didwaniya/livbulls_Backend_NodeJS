@@ -1,6 +1,18 @@
 const { TermPlan, validate } = require('./termPlan.model');
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
+
+const storage = multer.diskStorage({
+    destination: (req, res, callback) => {
+        callback(null, 'C:\Users\ayush\OneDrive\Pictures\Screenshots')
+    },
+    filename: (req, file, callback) => {
+        callback(null, `livbulls_${file.originalname}`)
+    },
+})
+
+var upload = multer({ storage: storage});
 
 router.get('/', async (req, res) => {
    console.log('req', req.body);
@@ -8,23 +20,37 @@ router.get('/', async (req, res) => {
    res.send(termPlans);
 })
 
-router.post('/', async (req, res) => { 
+router.post('/', upload.single('file'), async (req, res) => { 
     console.log(req.body);
-    const { error } = validate(req.body);
-    if (error) return res.status(404).json({ message: error.details[0].message });
-   
     if ( await TermPlan.findOne({ planName: req.body.planName }) ) {
         return res.status(400).json({ message: 'TermPlan already exist' });
     }
-
+    console.log(req.body);
+    const file = req.file;
+    if(!file) {
+        const error = new Error('Please upload a file')
+        error.httpStatusCode = 400
+        return res.send(error);
+    }
+    
     termPlan = new TermPlan({
         description: req.body.description,
         planName: req.body.planName,
-        url: req.body.url
+        url: req.file.originalname
     });
     termPlan = await termPlan.save();
     res.send(termPlan);
 }) 
+
+router.post('/file', upload.single('file'), (req, res, next) => {
+    const file = req.file;
+    if(!file) {
+        const error = new Error('Please upload a file')
+        error.httpStatusCode = 400
+        return next(error)
+    }
+    res.send(file)
+})  
 
 router.put('/', async (req, res) => {
     var query = { _id: req.body.id };
