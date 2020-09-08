@@ -36,15 +36,22 @@ router.post('/', upload.single('file'), async (req, res) => {
     termPlan = new TermPlan({
         description: req.body.description,
         planName: req.body.planName,
-        url: req.file.originalname
+        url: `livbulls_${req.file.originalname}`
     });
     termPlan = await termPlan.save();
     res.send(termPlan);
 }) 
 
-router.put('/', async (req, res) => {
+router.put('/', upload.single('file'), async (req, res) => {
     var query = { _id: req.body.id };
-    let termPlan = await TermPlan.findOneAndUpdate(query, { description: req.body.description, planName: req.body.planName, url: req.body.url  }, 
+    let imageUrl;
+    const file = req.file;
+    if(!file) { 
+        imageUrl = req.body.url;
+    } else {
+        imageUrl = `livbulls_${req.file.originalname}`;
+    }
+    let termPlan = await TermPlan.findOneAndUpdate(query, { description: req.body.description, planName: req.body.planName, url: imageUrl  }, 
         { new : true });
     console.log(termPlan);
 
