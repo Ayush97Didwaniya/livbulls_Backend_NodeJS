@@ -1,7 +1,9 @@
 ﻿const config = require('config.json');
+const { UserDetail } = require('../userDetails//userDetails.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const db = require('_helpers/db');
+const { addUserDetail } = require('../userDetails/userDetails.controller');
 const User = db.User;
 
 module.exports = {
@@ -15,10 +17,16 @@ module.exports = {
 
 async function authenticate({ username, password }) {
     const user = await User.findOne({ username });
+    const userDetailRef = user.userDetailRef;
+    console.log(userDetailRef);
+    const userDetail = await UserDetail.findById(userDetailRef);
+    console.log(userDetail);
+    
     if (user && bcrypt.compareSync(password, user.hash)) {
         const token = jwt.sign({ sub: user.id }, config.secret);
         return {
             ...user.toJSON(),
+            ...userDetail.toJSON(),
             token
         };
     }
@@ -42,14 +50,24 @@ async function create(userParam) {
         throw 'Username "' + userParam.email + '" is already taken';
     }
 
-    const user = new User(userParam);
+    const userDetail = await addUserDetail([''], [''], '', '', null);
+    console.log(userDetail);
+    console.log('saveing user');
+    const user = new User({
+        username: userParam.username,
+        firstName: userParam.firstName,
+        lastName: userParam.lastName,
+        email: userParam.email,
+        userDetailRef: userDetail,
+        }        
+    );
     // hash password
     if (userParam.password) {
         user.hash = bcrypt.hashSync(userParam.password, 10);
     }
-
-    // save user
     await user.save();
+    
+    console.log(user);
 }
 
 async function update(id, userParam) {
