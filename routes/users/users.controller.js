@@ -27,6 +27,8 @@ function register(req, res, next) {
 }
 
 function getAll(req, res, next) {
+    console.log('req body');
+
     userService.getAll()
         .then(users => res.json(users))
         .catch(err => next(err));
