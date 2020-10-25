@@ -1,4 +1,5 @@
 ﻿{
-    "connectionString": "mongodb://localhost/livbulls",
+    "connectionString1": "mongodb://localhost/livbulls",
+    "connectionString": "mongodb+srv://adidwaniya:$Yush110@cluster0.f4uuv.mongodb.net/livbullsDB?retryWrites=true&w=majority",
     "secret": "random_string"
 }
