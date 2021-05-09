@@ -35,7 +35,7 @@ function getAll(req, res, next) {
 }
 
 function getCurrent(req, res, next) {
-    userService.getById(req.user.sub)
+    userService.c(req.user.sub)
         .then(user => user ? res.json(user) : res.sendStatus(404))
         .catch(err => next(err));
 }

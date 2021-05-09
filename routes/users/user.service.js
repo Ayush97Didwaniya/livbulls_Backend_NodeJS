@@ -1,9 +1,9 @@
 ﻿const config = require('config.json');
-const { UserDetail } = require('../userDetails//userDetails.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const db = require('_helpers/db');
-const { addUserDetail } = require('../userDetails/userDetails.controller');
+const { addUserDetail } = require('../userDetails/userDetails.service');
+const { UserDetail } = require('../userDetails/userDetails.model');
 const User = db.User;
 
 module.exports = {
@@ -14,22 +14,6 @@ module.exports = {
     update,
     delete: _delete
 };
-
-
-class UserJSON {
-    constructor(firstName, lastName, email, createdDate, refered_user_lists, parentUser_email,
-        imageUrl, contact, term_plans) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.createdDate = createdDate;
-        this.referedUserLists = refered_user_lists;
-        this.parentUserEmail = parentUser_email;
-        this.imageUrl = imageUrl;
-        this.contact = contact;
-        this.termplans = term_plans;
-    }
-}
 
 async function authenticate({ username, password }) {
     const user = await User.findOne({ username });
@@ -53,22 +37,8 @@ async function authenticate({ username, password }) {
 async function getAll() {
     console.log('req body');
     const users = await User.find();
-    const arrayList = [];
-for (const item of users){
-    
-    const userDetailRef = item.userDetailRef;
-   // console.log(userDetailRef);
-    const userDetail = await UserDetail.findById(userDetailRef);
-   // console.log(userDetail);
-
-    var userObject = new UserJSON(item.firstName, item.lastName, item.email,item.createdDate,
-        userDetail.refered_user_lists,userDetail.parentUser_email,userDetail.imageUrl,userDetail.contact,
-        userDetail.term_plans);
-       // console.log(userObject);
-       
-    arrayList.push(userObject);
-}  
- return arrayList;
+    console.log(users);
+    return users;
 }
 
 async function getById(id) {
@@ -87,7 +57,7 @@ async function create(userParam) {
 
     const userDetail = await addUserDetail([''], [''], '', '', null);
     console.log(userDetail);
-    console.log('saveing user');
+    console.log('saving user');
     const user = new User({
         username: userParam.username,
         firstName: userParam.firstName,
@@ -128,3 +98,5 @@ async function update(id, userParam) {
 async function _delete(id) {
     await User.findByIdAndRemove(id);
 }
+
+

@@ -4,8 +4,6 @@ const autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(mongoose.connection);
 const Joi = require('joi');
 
-autoIncrement.initialize(mongoose.connection);
-
 var termPlanSchema = new mongoose.Schema({
     description : {
         type: String,
