@@ -96,7 +96,11 @@ async function update(id, userParam) {
 }
 
 async function _delete(id) {
-    await User.findByIdAndRemove(id);
+    await User.findById(id).then(async(user) => {
+        await Promise.all([UserDetail.findByIdAndRemove(user.userDetailRef), User.findByIdAndRemove(id)])
+    }).catch(async(err) => {
+        throw new Error('User can not be deleted.')
+    });
 }
 
 
