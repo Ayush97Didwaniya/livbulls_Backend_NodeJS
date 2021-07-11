@@ -34,13 +34,16 @@ router.put('/', upload.single('file'), async (req, res) => {
     } else {
         imageUrl = `livbulls_${req.file.originalname}`;
     }
-    console.log(imageUrl);
     console.log(req.body.termPlans);
     termPlans = [];
     termPlans = req.body.termPlans.split(',');
-    console.log(termPlans);
+    console.log(req.body.contact);
+    let contactVal = null;
+    if(req.body.contact != 'null') {
+        contactVal = req.body.contact;
+    }
     let uerDetail = await UserDetail.findOneAndUpdate(query, { term_plans: termPlans, 
-        parentUser_email: req.body.parentUserMail, contact: req.body.contact, imageUrl: imageUrl}, 
+        parentUser_email: req.body.parentUserMail, contact: contactVal, imageUrl: imageUrl}, 
         { new : true });
     console.log(uerDetail);
 
