@@ -28,6 +28,7 @@ app.use('/api/userDetail', require('./routes/userDetails/userDetails.controller'
 // api routes.
 app.use('/users', require('./routes/users/users.controller'));
 
+app.use('/emailSend', require('./routes/sendEmail/email-send.controller'));
 // global error handler.
 app.use(errorHandler);
 
